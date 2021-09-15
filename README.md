@@ -1,3 +1,20 @@
+# Dependencies
+
+- Python 3.9 (not tested below 3.9, but it should be fine with 3.8)
+- [Poetry](https://python-poetry.org/) (Python packaging manager)
+
+An example SQlite databse is provided in the repo.
+
+
+# To run
+
+To run, just do:
+```sh
+poetry run python main.py
+```
+Poetry will create the virtual environment and install the necessary packages in it automatically.
+
+
 # Task
 
 - Parse `request-data.json` into the query similar to `result.sql`. 
