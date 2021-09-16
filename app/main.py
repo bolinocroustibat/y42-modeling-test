@@ -1,32 +1,17 @@
 import asyncio
-import json
-from tortoise import Tortoise
 from tortoise.functions import Count, Trim, Lower, Upper, Coalesce
 from tortoise.query_utils import Q
 from typing import Optional
 
-from config import DB_MODELS, DB_URL, REQUEST_DATA_FILE
-from models import *
-
-
-async def connect_db() -> None:
-    await Tortoise.init(db_url=DB_URL, modules={"models": ["models"]})
-
-
-async def read_json() -> dict:
-    with open(REQUEST_DATA_FILE) as f:
-        requests: dict = json.load(f)
-    return requests
-
-
-def find_node(nodes: list, key: str) -> Optional[dict]:
-    try:
-        return next(n for n in nodes if n["key"] == key)
-    except StopIteration:
-        return None
+from config import DB_MODELS
+from helpers import connect_db, read_json, find_node
 
 
 class NodeQuery:
+    """
+    NodeQuery class represents a query to be executed on the database, with its method to modify it.
+    Initalization is the same as input method.
+    """
 
     def __init__(self, transform: dict) -> None:
         self.__call__(type="INPUT", transform=transform)
@@ -42,7 +27,7 @@ class NodeQuery:
             self.text_transform(transform)
         elif type == "OUTPUT":
             self.output(transform)
-        
+
     def input(self, transform: dict) -> None:
         table_name: str = transform["tableName"]
         select_fields: list[str] = transform["fields"]
@@ -55,19 +40,19 @@ class NodeQuery:
         #     for o in transform["operations"]:
         #         q_objects.add(Q(name='zob'))
         # elif transform["joinOperator"] == "OR":
-            pass
-    
+        pass
+
     def sort(self, transform: dict) -> None:
         for t in transform:
             if t["order"] == "ASC":
                 self.query = self.query.order_by(t["target"])
             elif t["order"] == "DESC":
                 self.query = self.query.order_by("-" + t["target"])
-    
+
     def text_transform(self, transform: dict) -> None:
         # TODO
         for t in transform:
-            self.query = self.query.annotate(name_upper=Upper('name'))
+            self.query = self.query.annotate(name_upper=Upper("name"))
         pass
 
     def output(self, transform: dict) -> None:
@@ -75,17 +60,21 @@ class NodeQuery:
 
 
 async def main() -> None:
-
+    """
+    The main function of the script.
+    """
     await connect_db()
 
+    # Parse the input JSON file
     requests = await read_json()
     nodes: dict = requests["nodes"]
     edges: dict = requests["edges"]
 
-    # Initial node, create the initial query
+    # Initial node, instanciate the initial query object
     current_key: str = edges[0]["from"]
-    node = find_node(nodes=nodes, key=current_key)
-    if node["type"] != "INPUT": raise Exception("First node must be INPUT!")
+    node: Optional[dict] = find_node(nodes=nodes, key=current_key)
+    if node["type"] != "INPUT":
+        raise Exception("First node must be INPUT!")
     node_query = NodeQuery(transform=node["transformObject"])
 
     # Following nodes
@@ -98,7 +87,8 @@ async def main() -> None:
 
     # Execute the final query at once
     users: list = await node_query.query
-    for u in users: print(u)
+    for u in users:
+        print(u)
 
 
 if __name__ == "__main__":
