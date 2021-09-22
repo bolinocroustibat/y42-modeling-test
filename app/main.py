@@ -10,6 +10,7 @@ from helpers import connect_db, read_json, find_node
 class NodeQuery:
     """
     NodeQuery class represents a query to be executed on the database, with its method to modify it.
+    It has only one attribute: self.query
     Initalization is the same as input method.
     """
 
