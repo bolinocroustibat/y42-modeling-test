@@ -5,7 +5,7 @@
             "type": "INPUT",
             "transformObject": {
                 "tableName": "users",
-                "fields": [
+                "columns": [
                     "id",
                     "name",
                     "age"

@@ -30,6 +30,8 @@ class NodeQuery:
             self._text_transform(transform)
         elif type == "OUTPUT":
             self._output(transform)
+        else:
+            raise Exception("Unknown type transformation.")
 
     def _validate_column(self, column_name: str) -> None:
         if column_name not in self.VALID_COLUMNS[self.table]:
