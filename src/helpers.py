@@ -1,6 +1,7 @@
 import json
-from tortoise import Tortoise
 from typing import Optional
+
+from tortoise import Tortoise
 
 from config import DB_URL, REQUEST_DATA_FILE
 
@@ -20,3 +21,12 @@ def find_node(nodes: list, key: str) -> Optional[dict]:
         return next(n for n in nodes if n["key"] == key)
     except StopIteration:
         return None
+
+
+def sort_edges(edges: list) -> list:
+    """
+    Sort the edges in the edges list.
+    """
+    edges.sort(key=lambda e: e["from"])
+    edges.sort(key=lambda e: e["to"])
+    return edges

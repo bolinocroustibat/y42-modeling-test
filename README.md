@@ -11,7 +11,7 @@ An example SQLite database is provided in the repo.
 
 Edit the config file `config.py`to change the database or the JSON file if necessary. Then, to run, just do:
 ```sh
-poetry run python app/main.py
+poetry run python src/main.py
 ```
 Poetry will create the virtual environment and install the necessary packages in it for you.
 
