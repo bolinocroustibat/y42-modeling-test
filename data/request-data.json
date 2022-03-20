@@ -16,7 +16,7 @@
             "key": "B",
             "type": "FILTER",
             "transformObject": {
-                "variable_field_name": "age",
+                "column": "age",
                 "joinOperator": "AND",
                 "operations": [
                     {
@@ -31,11 +31,11 @@
             "type": "SORT",
             "transformObject": [
                 {
-                    "target": "age",
+                    "column": "age",
                     "order": "ASC"
                 },
                 {
-                    "target": "name",
+                    "column": "name",
                     "order": "ASC"
                 }
             ]
